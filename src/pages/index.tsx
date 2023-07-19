@@ -3,7 +3,7 @@ import { InferGetServerSidePropsType } from 'next';
 import Table from '@/components/Table';
 
 export async function getServerSideProps(context:any) {
-  const res = await fetch('http://localhost:3000/api/readExcel');
+  const res = await fetch('https://meaningful-data.vercel.app/api/readExcel');
   const data = await res.json();
 
   return {
