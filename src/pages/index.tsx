@@ -1,17 +1,27 @@
 import { useState } from 'react';
 import { InferGetServerSidePropsType } from 'next';
 import Table from '@/components/Table';
+import { GetStaticProps } from 'next';
+import XLSX from 'xlsx';
 
-export async function getServerSideProps(context:any) {
-  const res = await fetch('https://meaningful-data.vercel.app/api/readExcel');
-  const data = await res.json();
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const workbook = XLSX.readFile('./public/belge.xlsx');
+    const sheet_name_list = workbook.SheetNames;
+    const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 
-  return {
-    props: { data },
+    return {
+      props: {
+        data,
+      },
+      revalidate: 1,
+    };
+  } catch (error) {
+    console.error(error);
+    return { props: { errors: "error" } };
   }
-}
-
-const HomePage = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+};
+const HomePage = ({ data }:any) => {
   const [tab, setTab] = useState(1); 
 
   const columns = [
